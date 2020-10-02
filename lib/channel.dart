@@ -1,4 +1,5 @@
 import 'heroes.dart';
+import 'controller/heroes_controller.dart';
 
 /// This type initializes an application.
 ///
@@ -13,7 +14,8 @@ class HeroesChannel extends ApplicationChannel {
   /// This method is invoked prior to [entryPoint] being accessed.
   @override
   Future prepare() async {
-    logger.onRecord.listen((rec) => print("$rec ${rec.error ?? ""} ${rec.stackTrace ?? ""}"));
+    logger.onRecord.listen(
+        (rec) => print("$rec ${rec.error ?? ""} ${rec.stackTrace ?? ""}"));
   }
 
   /// Construct the request channel.
@@ -26,14 +28,7 @@ class HeroesChannel extends ApplicationChannel {
   Controller get entryPoint {
     final router = Router();
 
-    // Prefer to use `link` instead of `linkFunction`.
-    // See: https://aqueduct.io/docs/http/request_controller/
-    router
-      .route("/example")
-      .linkFunction((request) async {
-        return Response.ok({"key": "value"});
-      });
-
+    router.route('/heroes/[:id]').link(() => HeroesController());
     return router;
   }
 }
