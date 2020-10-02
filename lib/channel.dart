@@ -6,6 +6,8 @@ import 'controller/heroes_controller.dart';
 /// Override methods in this class to set up routes and initialize services like
 /// database connections. See http://aqueduct.io/docs/http/channel/.
 class HeroesChannel extends ApplicationChannel {
+  ManagedContext context;
+
   /// Initialize services in this method.
   ///
   /// Implement this method to initialize services, read values from [options]
@@ -16,6 +18,12 @@ class HeroesChannel extends ApplicationChannel {
   Future prepare() async {
     logger.onRecord.listen(
         (rec) => print("$rec ${rec.error ?? ""} ${rec.stackTrace ?? ""}"));
+
+    final dataModel = ManagedDataModel.fromCurrentMirrorSystem();
+    final persistentStore = PostgreSQLPersistentStore.fromConnectionInfo(
+        "heroes_user", "password", "localhost", 5432, "heroes");
+
+    context = ManagedContext(dataModel, persistentStore);
   }
 
   /// Construct the request channel.
@@ -28,7 +36,7 @@ class HeroesChannel extends ApplicationChannel {
   Controller get entryPoint {
     final router = Router();
 
-    router.route('/heroes/[:id]').link(() => HeroesController());
+    router.route('/heroes/[:id]').link(() => HeroesController(context));
     return router;
   }
 }
