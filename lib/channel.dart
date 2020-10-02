@@ -1,5 +1,5 @@
-import 'heroes.dart';
 import 'controller/heroes_controller.dart';
+import 'heroes.dart';
 
 /// This type initializes an application.
 ///

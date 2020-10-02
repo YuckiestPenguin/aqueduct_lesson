@@ -8,11 +8,16 @@ class HeroesController extends ResourceController {
   final ManagedContext context;
 
   @Operation.get()
-  Future<Response> getAllHeroes() async {
+  Future<Response> getAllHeroes({@Bind.query('name') String name}) async {
     final heroQuery = Query<Hero>(context);
+    if (name != null) {
+      heroQuery.where((h) => h.name).contains(name, caseSensitive: false);
+    }
     final heroes = await heroQuery.fetch();
+
     return Response.ok(heroes);
   }
+
 
   @Operation.get('id')
   Future<Response> getHeroByID(@Bind.path('id') int id) async {
