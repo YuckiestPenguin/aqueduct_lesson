@@ -14,14 +14,32 @@ class HeroesChannel extends ApplicationChannel {
   /// and any other initialization required before constructing [entryPoint].
   ///
   /// This method is invoked prior to [entryPoint] being accessed.
+  // @override
+  // Future prepare() async {
+  //   logger.onRecord.listen(
+  //       (rec) => print("$rec ${rec.error ?? ""} ${rec.stackTrace ?? ""}"));
+  //
+  //   final dataModel = ManagedDataModel.fromCurrentMirrorSystem();
+  //   final persistentStore = PostgreSQLPersistentStore.fromConnectionInfo(
+  //       "heroes_user", "password", "localhost", 5432, "heroes");
+  //
+  //   context = ManagedContext(dataModel, persistentStore);
+  // }
+
   @override
   Future prepare() async {
     logger.onRecord.listen(
         (rec) => print("$rec ${rec.error ?? ""} ${rec.stackTrace ?? ""}"));
 
+    final config = HeroConfig(options.configurationFilePath);
     final dataModel = ManagedDataModel.fromCurrentMirrorSystem();
     final persistentStore = PostgreSQLPersistentStore.fromConnectionInfo(
-        "heroes_user", "password", "localhost", 5432, "heroes");
+      config.database.username,
+      config.database.password,
+      config.database.host,
+      config.database.port,
+      config.database.databaseName,
+    );
 
     context = ManagedContext(dataModel, persistentStore);
   }
@@ -39,4 +57,10 @@ class HeroesChannel extends ApplicationChannel {
     router.route('/heroes/[:id]').link(() => HeroesController(context));
     return router;
   }
+}
+
+class HeroConfig extends Configuration {
+  HeroConfig(String path) : super.fromFile(File(path));
+
+  DatabaseConfiguration database;
 }
