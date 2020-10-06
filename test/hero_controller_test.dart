@@ -1,4 +1,3 @@
-import 'package:heroes/model/hero.dart';
 
 import 'harness/app.dart';
 

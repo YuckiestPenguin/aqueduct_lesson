@@ -1,6 +1,7 @@
+import 'package:aqueduct/managed_auth.dart';
+
 import 'controller/heroes_controller.dart';
 import 'heroes.dart';
-import 'package:aqueduct/managed_auth.dart';
 import 'model/user.dart';
 
 /// This type initializes an application.

@@ -36,7 +36,6 @@ class HeroesController extends ResourceController {
     //   return Response.notFound();
     // }
 
-    return Response.ok(hero);
   }
 
   // @Operation.post()
