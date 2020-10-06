@@ -1,5 +1,7 @@
 import 'controller/heroes_controller.dart';
 import 'heroes.dart';
+import 'package:aqueduct/managed_auth.dart';
+import 'model/user.dart';
 
 /// This type initializes an application.
 ///
@@ -8,23 +10,7 @@ import 'heroes.dart';
 class HeroesChannel extends ApplicationChannel {
   ManagedContext context;
 
-  /// Initialize services in this method.
-  ///
-  /// Implement this method to initialize services, read values from [options]
-  /// and any other initialization required before constructing [entryPoint].
-  ///
-  /// This method is invoked prior to [entryPoint] being accessed.
-  // @override
-  // Future prepare() async {
-  //   logger.onRecord.listen(
-  //       (rec) => print("$rec ${rec.error ?? ""} ${rec.stackTrace ?? ""}"));
-  //
-  //   final dataModel = ManagedDataModel.fromCurrentMirrorSystem();
-  //   final persistentStore = PostgreSQLPersistentStore.fromConnectionInfo(
-  //       "heroes_user", "password", "localhost", 5432, "heroes");
-  //
-  //   context = ManagedContext(dataModel, persistentStore);
-  // }
+  AuthServer authServer;
 
   @override
   Future prepare() async {
@@ -42,6 +28,9 @@ class HeroesChannel extends ApplicationChannel {
     );
 
     context = ManagedContext(dataModel, persistentStore);
+
+    final authStorage = ManagedAuthDelegate<User>(context);
+    authServer = AuthServer(authStorage);
   }
 
   /// Construct the request channel.
